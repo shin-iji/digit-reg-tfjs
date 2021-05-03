@@ -1,16 +1,25 @@
 body {
   touch-action: none;
-  font-family: "Roboto";
+  font-family: 'Open Sans', sans-serif;
+  background-color: #BDAA8A;
+  color: #393E51;
 }
 h1 {
   margin: 50px;
+  margin-bottom: 32px;
   font-size: 50px;
   text-align: center;
-  font-family: Arial;
+  font-family: 'Krona One', sans-serif;
   text-transform: uppercase;
 }
+h4 {
+  font-size: 24px;
+  text-align: center;
+}
+
 #paint {
-  border: 10px solid #f44336;
+  border: 10px solid #FCCF52;
+  background-color: #F2EDE7;
   margin: auto;
   border-radius: 15px;
   -webkit-box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
@@ -20,30 +29,52 @@ h1 {
   height: 300px;
 }
 #predicted {
-  font-size: 60px;
-  margin-top: 60px;
   text-align: center;
 }
 #number {
-  border: 3px solid black;
+  border: 10px solid #FCCF52;
+  background-color: #F2EDE7;
+  -webkit-box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
+  -moz-box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
+  box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
+  color: #435792;
   margin: auto;
-  margin-top: 30px;
+  border-radius: 15px;
   text-align: center;
   vertical-align: middle;
-  margin-bottom: -12px;
-  width: 150px;
-  font-size: 120px;
+  width: 300px;
+  font-size: 220px;
 }
 #clear {
   border: none;
-  color: white;
-  padding: 15px 36px;
+  border-radius: 8px;
+  -webkit-box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
+  -moz-box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
+  box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
+  padding: 16px 128px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 35px;
+  font-size: 28px;
   cursor: pointer;
-  background-color: #f44336;
+  background-color: #FCCF52;
   margin: auto;
-  font-size: 35px;
+  margin-top: 16px;
+  margin-left: -14px;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.column {
+  float: left;
+  width: 50%;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
 }
