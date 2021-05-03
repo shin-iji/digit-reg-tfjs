@@ -1,238 +1,126 @@
-let model;
-var canvasWidth = 150;
-var canvasHeight = 150;
-var canvasStrokeStyle = "white";
-var canvasLineJoin = "round";
-var canvasLineWidth = 10;
-var canvasBackgroundColor = "black";
-var canvasId = "canvas";
-var clickX = new Array();
-var clickY = new Array();
-var clickD = new Array();
-var drawing;
+var cw = $("#paint").width();
+$("#paint").css({ height: cw + "px" });
 
-var canvasBox = document.getElementById("canvas_box");
-var canvas = document.createElement("canvas");
+cw = $("#number").width();
+$("#number").css({ height: cw + "px" });
 
-canvas.setAttribute("width", canvasWidth);
-canvas.setAttribute("height", canvasHeight);
-canvas.setAttribute("id", canvasId);
-canvas.style.backgroundColor = canvasBackgroundColor;
-canvasBox.appendChild(canvas);
-if (typeof G_vmlCanvasManager != "undefined") {
-  canvas = G_vmlCanvasManager.initElement(canvas);
-}
+// From https://www.html5canvastutorials.com/labs/html5-canvas-paint-application/
+var canvas = document.getElementById("myCanvas");
+var context = canvas.getContext("2d");
 
-ctx = canvas.getContext("2d");
+var compuetedStyle = getComputedStyle(document.getElementById("paint"));
+canvas.width = parseInt(compuetedStyle.getPropertyValue("width"));
+canvas.height = parseInt(compuetedStyle.getPropertyValue("height"));
 
-//---------------------
-// MOUSE DOWN function
-//---------------------
-$("#canvas").mousedown(function (e) {
-  var rect = canvas.getBoundingClientRect();
-  var mouseX = e.clientX - rect.left;
-  var mouseY = e.clientY - rect.top;
-  drawing = true;
-  addUserGesture(mouseX, mouseY);
-  drawOnCanvas();
+var mouse = { x: 0, y: 0 };
+
+canvas.addEventListener(
+  "mousemove",
+  function (e) {
+    mouse.x = e.pageX - this.offsetLeft;
+    mouse.y = e.pageY - this.offsetTop;
+  },
+  false
+);
+
+context.lineWidth = 25;
+context.lineJoin = "round";
+context.lineCap = "round";
+context.strokeStyle = "#0000FF";
+
+canvas.addEventListener(
+  "mousedown",
+  function (e) {
+    context.moveTo(mouse.x, mouse.y);
+    context.beginPath();
+    canvas.addEventListener("mousemove", onPaint, false);
+  },
+  false
+);
+
+canvas.addEventListener(
+  "mouseup",
+  function () {
+    canvas.removeEventListener("mousemove", onPaint, false);
+    var img = new Image();
+    img.onload = function () {
+      context.drawImage(img, 0, 0, 28, 28);
+      data = context.getImageData(0, 0, 28, 28).data;
+      var input = [];
+      for (var i = 0; i < data.length; i += 4) {
+        input.push(data[i + 2] / 255);
+      }
+      predict(input);
+    };
+    img.src = canvas.toDataURL("image/png");
+  },
+  false
+);
+
+var onPaint = function () {
+  context.lineTo(mouse.x, mouse.y);
+  context.stroke();
+};
+
+tf.loadLayersModel("https://raw.githubusercontent.com/shin-iji/digit-reg-tfjs/master/model/tfjs_model/model.json").then(function (model) {
+  window.model = model;
 });
 
-//-----------------------
-// TOUCH START function
-//-----------------------
+// http://bencentra.com/code/2014/12/05/html5-canvas-touch-events.html
+// Set up touch events for mobile, etc
 canvas.addEventListener(
   "touchstart",
   function (e) {
-    if (e.target == canvas) {
-      e.preventDefault();
-    }
-
-    var rect = canvas.getBoundingClientRect();
     var touch = e.touches[0];
-
-    var mouseX = touch.clientX - rect.left;
-    var mouseY = touch.clientY - rect.top;
-
-    drawing = true;
-    addUserGesture(mouseX, mouseY);
-    drawOnCanvas();
+    canvas.dispatchEvent(
+      new MouseEvent("mousedown", {
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+      })
+    );
   },
   false
 );
-
-//---------------------
-// MOUSE MOVE function
-//---------------------
-$("#canvas").mousemove(function (e) {
-  if (drawing) {
-    var rect = canvas.getBoundingClientRect();
-    var mouseX = e.clientX - rect.left;
-    var mouseY = e.clientY - rect.top;
-    addUserGesture(mouseX, mouseY, true);
-    drawOnCanvas();
-  }
-});
-
-//---------------------
-// TOUCH MOVE function
-//---------------------
-canvas.addEventListener(
-  "touchmove",
-  function (e) {
-    if (e.target == canvas) {
-      e.preventDefault();
-    }
-    if (drawing) {
-      var rect = canvas.getBoundingClientRect();
-      var touch = e.touches[0];
-
-      var mouseX = touch.clientX - rect.left;
-      var mouseY = touch.clientY - rect.top;
-
-      addUserGesture(mouseX, mouseY, true);
-      drawOnCanvas();
-    }
-  },
-  false
-);
-
-//-------------------
-// MOUSE UP function
-//-------------------
-$("#canvas").mouseup(function (e) {
-  drawing = false;
-});
-
-//---------------------
-// TOUCH END function
-//---------------------
 canvas.addEventListener(
   "touchend",
   function (e) {
-    if (e.target == canvas) {
-      e.preventDefault();
-    }
-    drawing = false;
+    canvas.dispatchEvent(new MouseEvent("mouseup", {}));
   },
   false
 );
-
-//----------------------
-// MOUSE LEAVE function
-//----------------------
-$("#canvas").mouseleave(function (e) {
-  drawing = false;
-});
-
-//-----------------------
-// TOUCH LEAVE function
-//-----------------------
 canvas.addEventListener(
-  "touchleave",
+  "touchmove",
   function (e) {
-    if (e.target == canvas) {
-      e.preventDefault();
-    }
-    drawing = false;
+    var touch = e.touches[0];
+    canvas.dispatchEvent(
+      new MouseEvent("mousemove", {
+        clientX: touch.clientX,
+        clientY: touch.clientY,
+      })
+    );
   },
   false
 );
 
-//--------------------
-// ADD CLICK function
-//--------------------
-function addUserGesture(x, y, dragging) {
-  clickX.push(x);
-  clickY.push(y);
-  clickD.push(dragging);
-}
-
-//-------------------
-// RE DRAW function
-//-------------------
-function drawOnCanvas() {
-  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-  ctx.strokeStyle = canvasStrokeStyle;
-  ctx.lineJoin = canvasLineJoin;
-  ctx.lineWidth = canvasLineWidth;
-
-  for (var i = 0; i < clickX.length; i++) {
-    ctx.beginPath();
-    if (clickD[i] && i) {
-      ctx.moveTo(clickX[i - 1], clickY[i - 1]);
-    } else {
-      ctx.moveTo(clickX[i] - 1, clickY[i]);
-    }
-    ctx.lineTo(clickX[i], clickY[i]);
-    ctx.closePath();
-    ctx.stroke();
+var predict = function (input) {
+  if (window.model) {
+    window.model
+      .predict([tf.tensor(input).reshape([1, 28, 28, 1])])
+      .array()
+      .then(function (scores) {
+        scores = scores[0];
+        predicted = scores.indexOf(Math.max(...scores));
+        $("#number").html(predicted);
+      });
+  } else {
+    // The model takes a bit to load, if we are too fast, wait
+    setTimeout(function () {
+      predict(input);
+    }, 50);
   }
-}
+};
 
-//------------------------
-// CLEAR CANVAS function
-//------------------------
-$("#clear-button").click(async function () {
-  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-  clickX = new Array();
-  clickY = new Array();
-  clickD = new Array();
-  $(".prediction-text").empty();
-  $("#result_box").addClass("d-none");
+$("#clear").click(function () {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  $("#number").html("");
 });
-
-//-------------------------------------
-// loader for cnn model
-//-------------------------------------
-async function loadModel() {
-  // clear the model variable
-  model = undefined;
-  // load the model using a HTTPS request (where you have stored your model files)
-  model = await tf.loadLayersModel("https://raw.githubusercontent.com/shin-iji/digit-reg-tfjs/master/model/tfjs_model/model.json");
-  console.log("model loaded successed");
-}
-
-loadModel();
-
-//-----------------------------------------------
-// preprocess the canvas
-//-----------------------------------------------
-function preprocessCanvas(image) {
-  // resize the input image to target size of (1, 28, 28)
-  let tensor = tf.browser.fromPixels(image).resizeNearestNeighbor([28, 28]).mean(2).expandDims(2).expandDims().toFloat();
-  return tensor.div(255.0);
-}
-
-//--------------------------------------------
-// predict function
-//--------------------------------------------
-$("#predict-button").click(async function () {
-  // get image data from canvas
-
-  // preprocess canvas
-  let tensor = preprocessCanvas(canvas);
-
-  // make predictions on the preprocessed image tensor
-  let predictions = await model.predict(tensor).data();
-
-  // get the model's prediction results
-  let results = Array.from(predictions);
-
-  // display the predictions in chart
-  $("#result_box").removeClass("d-none");
-  displayLabel(results);
-});
-
-function displayLabel(data) {
-  var max = data[0];
-  var maxIndex = 0;
-
-  for (var i = 1; i < data.length; i++) {
-    if (data[i] > max) {
-      maxIndex = i;
-      max = data[i];
-    }
-  }
-  $(".prediction-text").html("Predicting you draw <b>" + maxIndex + "</b> with <b>" + Math.trunc(max * 100) + "%</b> confidence");
-}
