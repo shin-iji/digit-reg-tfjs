@@ -189,7 +189,7 @@ async function loadModel() {
   // clear the model variable
   model = undefined;
   // load the model using a HTTPS request (where you have stored your model files)
-  model = await tf.loadLayersModel("../model/tfjs_model/model.json");
+  model = await tf.loadLayersModel("https://raw.githubusercontent.com/shin-iji/digit-reg-tfjs/master/model/tfjs_model/model.json");
   console.log("model loaded successed");
 }
 
