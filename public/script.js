@@ -23,10 +23,10 @@ canvas.addEventListener(
   false
 );
 
-context.lineWidth = 25;
+context.lineWidth = 15;
 context.lineJoin = "round";
 context.lineCap = "round";
-context.strokeStyle = "#0000FF";
+context.strokeStyle = "#435792";
 
 canvas.addEventListener(
   "mousedown",
