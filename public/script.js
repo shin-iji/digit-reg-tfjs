@@ -4,7 +4,6 @@ $("#paint").css({ height: cw + "px" });
 cw = $("#number").width();
 $("#number").css({ height: cw + "px" });
 
-// From https://www.html5canvastutorials.com/labs/html5-canvas-paint-application/
 var canvas = document.getElementById("myCanvas");
 var context = canvas.getContext("2d");
 
@@ -66,8 +65,6 @@ tf.loadLayersModel("https://raw.githubusercontent.com/shin-iji/digit-reg-tfjs/ma
   window.model = model;
 });
 
-// http://bencentra.com/code/2014/12/05/html5-canvas-touch-events.html
-// Set up touch events for mobile, etc
 canvas.addEventListener(
   "touchstart",
   function (e) {
@@ -113,7 +110,6 @@ var predict = function (input) {
         $("#number").html(predicted);
       });
   } else {
-    // The model takes a bit to load, if we are too fast, wait
     setTimeout(function () {
       predict(input);
     }, 50);

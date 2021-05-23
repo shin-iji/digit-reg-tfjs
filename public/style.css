@@ -1,25 +1,27 @@
 body {
   touch-action: none;
-  font-family: 'Open Sans', sans-serif;
-  background-color: #BDAA8A;
-  color: #393E51;
+  font-family: "Open Sans", sans-serif;
+  background-color: #bdaa8a;
+  color: #393e51;
 }
+
 h1 {
   margin: 50px;
   margin-bottom: 32px;
   font-size: 50px;
   text-align: center;
-  font-family: 'Krona One', sans-serif;
+  font-family: "Krona One", sans-serif;
   text-transform: uppercase;
 }
+
 h4 {
   font-size: 24px;
   text-align: center;
 }
 
 #paint {
-  border: 10px solid #FCCF52;
-  background-color: #F2EDE7;
+  border: 10px solid #fccf52;
+  background-color: #f2ede7;
   margin: auto;
   border-radius: 15px;
   -webkit-box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
@@ -28,12 +30,14 @@ h4 {
   width: 300px;
   height: 300px;
 }
+
 #predicted {
   text-align: center;
 }
+
 #number {
-  border: 10px solid #FCCF52;
-  background-color: #F2EDE7;
+  border: 10px solid #fccf52;
+  background-color: #f2ede7;
   -webkit-box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
   -moz-box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
   box-shadow: 3px 7px 26px -3px rgba(0, 0, 0, 0.26);
@@ -45,6 +49,7 @@ h4 {
   width: 300px;
   font-size: 220px;
 }
+
 #clear {
   border: none;
   border-radius: 8px;
@@ -57,7 +62,7 @@ h4 {
   display: inline-block;
   font-size: 28px;
   cursor: pointer;
-  background-color: #FCCF52;
+  background-color: #fccf52;
   margin: auto;
   margin-top: 16px;
   margin-left: -14px;
